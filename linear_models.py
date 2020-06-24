@@ -15,7 +15,7 @@ def nw_ols(y:pd.Series, x:pd.DataFrame):
     """Performs Newey-West heteroscedastic-serial correlation consistent least-squares regression
 
     Args:
-        y: Series of the dependent variable.
+        y: Series of the dependent variab le.
         max_lag: DataFrame of the regressors.
 
     Returns:
