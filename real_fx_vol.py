@@ -102,13 +102,20 @@ print(b_dms)
 # EMs
 em_params, em_pvalues = cs_ardl(real_vol, dcc, ems)
 em_mg = gf.trim_mean(em_params, trim_param=0.1)
+em_p = gf.trim_mean(em_pvalues, trim_param=0.1)
 
 # DMs
 dm_params, dm_pvalues = cs_ardl(real_vol, dcc, dms)
 dm_mg = gf.trim_mean(dm_params, trim_param=0.1)
+dm_p = gf.trim_mean(dm_pvalues, trim_param=0.1)
+
 
 print("EMs")
 print(em_mg)
 print("DMs")
 print(dm_mg)
 
+print("EMs")
+print(em_p)
+print("DMs")
+print(dm_p)
