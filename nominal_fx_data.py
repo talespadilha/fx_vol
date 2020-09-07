@@ -58,7 +58,8 @@ def nominal_import(start_date:str, end_date:str, data_path:str, base_fx='USD'):
     # Using a dictionary to get initally store the FX data
     eur_fx = {}
     eur_fx['EUR'] = ecb_fx_import(base_fx, start_date, end_date)
-    for fx in fx_codes:
+    countries = [c for c in fx_codes if c not in ['EUR', 'CLP']]
+    for fx in countries:
         eur_fx[fx] = ecb_fx_import(fx, start_date, end_date)
     # Creating a DataFrame
     df_eur = pd.concat(eur_fx, axis=1)

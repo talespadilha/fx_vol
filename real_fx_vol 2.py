@@ -14,6 +14,7 @@ os.chdir('/Users/talespadilha/Documents/Projects/fx_vol')
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+from datetime import datetime
 
 
 # Idiosyncratic Libraries

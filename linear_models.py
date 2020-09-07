@@ -30,7 +30,7 @@ def nw_ols(y:pd.Series, x:pd.DataFrame):
 
     return params, p_values
 
-def cs_ardl(r:pd.DataFrame, cov:pd.DataFrame, mkts:list):
+def cs_ardl(r:pd.DataFrame, cov:pd.DataFrame, geovol, mkts:list):
     """Estimates the cross-sectionally augmented autoregressive distributed lag model for the group defined in 'mkts'
 
     Args:
@@ -59,6 +59,7 @@ def cs_ardl(r:pd.DataFrame, cov:pd.DataFrame, mkts:list):
                           l1_means_real,
                           #means_dcc,
                           means_real
+                          #geovol
                           ], axis=1).dropna()
         #c_df = gf.df_outliers(c_df, 3)
         y = c_df['var_r']
