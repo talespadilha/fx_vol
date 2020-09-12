@@ -64,6 +64,17 @@ def group_mean(df: pd.DataFrame, level_var: int, trim_param=0.1,):
     final_df.columns = ['mean_'+col for col in final_df.columns]
     
     return final_df
+
+def markets_set(final_df: pd.DataFrame, data_path: str):
+    """ Sets which markets are EMs and DMs"""
+    # Getting the lists of EMs and DMs
+    ems = text_import(data_path+'ems.txt')
+    dms = text_import(data_path+'dms.txt')
+    # Checking if there match with the data file:
+    if set(final_df.columns.get_level_values(0).unique()) != set(ems+dms):
+        raise NameError('Update EMs and DMs lists!')
+        
+    return ems, dms 
     
 
 if __name__ == "__main__":

@@ -22,17 +22,6 @@ from real_fx_data import real_import
 from garch_selection import garch_volatility
 from linear_models import cs_ardl, nw_ols
 
-#%% Support functions
-def markets_set(final_df: pd.DataFrame, data_path: str):
-    """ Sets which markets are EMs and DMs"""
-    # Getting the lists of EMs and DMs
-    ems = gf.text_import(data_path+'ems.txt')
-    dms = gf.text_import(data_path+'dms.txt')
-    # Checking if there match with the data file:
-    if set(final_df.columns.get_level_values(0).unique()) != set(ems+dms):
-        raise NameError('Update EMs and DMs lists!')
-        
-    return ems, dms 
 
 #%% Importing Data
 data_path = '/Users/talespadilha/Documents/Oxford/Research/Real Exchange Rate Volatility/Data Files/'
@@ -104,7 +93,7 @@ for currcy in real_rets:
 betas = pd.concat(betas, axis=1)
 
 # Selecting ems and dms
-ems, dms = markets_set(df, data_path)
+ems, dms = gf.markets_set(df, data_path)
 
 # Mean for each group
 b_ems = betas[ems].mean(axis=1)
@@ -116,7 +105,7 @@ print(b_dms)
 
 #%% Panel Data Analysis
 # EMs
-em_params, em_pvalues = cs_ardl(real_vol, dcc, geovol_d, ems)
+em_params, em_pvalues = cs_ardl(real_vol, dcc, geovol_d, ems+dms)
 em_mg = gf.trim_mean(em_params, trim_param=0.1)
 em_p = gf.trim_mean(em_pvalues, trim_param=0.1)
 
