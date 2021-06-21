@@ -1,0 +1,62 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Jan 13 17:03:43 2021
+
+@author: talespadilha
+"""
+
+import pandas as pd
+
+def corr_list(df):
+    l=[]
+    for i in range(len(df)):
+        for j in range(i):
+            if i>j:
+                l.append(df.iloc[i,j])
+    ls = pd.Series(l)
+                
+    return ls
+
+
+
+
+
+
+corr_list(real_vol.corr()).mean()
+corr_list(em_rvol.corr()).mean()
+corr_list(dm_rvol.corr()).mean()
+
+
+std_e2 = real_vol
+
+psi = std_e2 - 1
+N = psi.shape[1]
+T = psi.shape[0]
+a=[]
+for i in range(N):
+    for j in range(i):
+        if i>j:
+            for t in range(T):
+                a.append(psi.iloc[t,i]*psi.iloc[t,j])
+a_series = pd.Series(a)
+b=[]
+for i in range(N):
+    for t in range(T):
+        b.append(psi.iloc[t,i]**2)
+b_series = pd.Series(b)
+xi = np.sqrt((N*T)/((N-1)/2)) * (a_series.sum()/b_series.sum())
+print(xi)
+
+
+
+
+
+
+sns.set_style("darkgrid")
+df_try.loc['2010-01-01':].plot(figsize=(16,6))
+
+df_try.columns = ['R', 'E', 'P']
+
+
+
