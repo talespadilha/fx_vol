@@ -19,13 +19,17 @@ import matplotlib.pyplot as plt
 # Idiosyncratic Libraries
 import general_functions as gf
 from real_fx_data import real_import
+from real_fx_data_old import real_import as real_import_old
 from garch_selection import garch_volatility
 from linear_models import cs_ardl, nw_ols
 
 
 #%% Importing Data
 data_path = '/Users/talespadilha/Documents/Oxford/Research/Real Exchange Rate Volatility/Data Files/'
-df = real_import(data_path, 'monthly_data.xlsx', 'us_data.xlsx', base_fx='USD') 
+#df = real_import(data_path, 'monthly_data.xlsx', 'us_data.xlsx', base_fx='USD') 
+df = real_import_old(data_path, 'monthly_data.xlsx', 'us_data.xlsx') 
+
+
 # Adjusting for 21st century data
 #df= df.loc[pd.to_datetime('01-2000', format='%m-%Y'):, :]
 
