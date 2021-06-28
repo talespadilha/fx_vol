@@ -55,7 +55,7 @@ def trim_mean(df: pd.DataFrame, trim_param: float):
     return final_series
 
         
-def group_mean(df: pd.DataFrame, level_var: int, trim_param=0.1,):
+def group_mean(df: pd.DataFrame, level_var: int, trim_param=0.1):
     """Calculates the group mean for the DataFrame"""
     means = {}
     for var in df.columns.levels[level_var]:
@@ -65,11 +65,12 @@ def group_mean(df: pd.DataFrame, level_var: int, trim_param=0.1,):
     
     return final_df
 
-def markets_set(final_df: pd.DataFrame, data_path: str):
+def markets_set(final_df: pd.DataFrame, data_path: str, base_fx: str):
     """ Sets which markets are EMs and DMs"""
     # Getting the lists of EMs and DMs
     ems = text_import(data_path+'ems.txt')
-    dms = text_import(data_path+'dms.txt')
+    dms0 = text_import(data_path+'dms.txt')
+    dms = [x for x in dms0 if x not in [base_fx]]
     # Checking if there match with the data file:
     if set(final_df.columns.get_level_values(0).unique()) != set(ems+dms):
         raise NameError('Update EMs and DMs lists!')

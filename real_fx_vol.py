@@ -26,8 +26,8 @@ from linear_models import cs_ardl, nw_ols
 
 #%% Importing Data
 data_path = '/Users/talespadilha/Documents/Oxford/Research/Real Exchange Rate Volatility/Data Files/'
-#df = real_import(data_path, 'monthly_data.xlsx', 'us_data.xlsx', base_fx='USD') 
-df = real_import_old(data_path, 'monthly_data.xlsx', 'us_data.xlsx') 
+df = real_import(data_path, 'monthly_data.xlsx', 'us_data.xlsx', base_fx='USD') 
+#df = real_import_old(data_path, 'monthly_data.xlsx', 'us_data.xlsx') 
 
 
 # Adjusting for 21st century data
