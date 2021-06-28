@@ -97,7 +97,7 @@ for currcy in real_rets:
 betas = pd.concat(betas, axis=1)
 
 # Selecting ems and dms
-ems, dms = gf.markets_set(df, data_path)
+ems, dms = gf.markets_set(df, data_path, base_fx='USD')
 
 # Mean for each group
 b_ems = betas[ems].mean(axis=1)

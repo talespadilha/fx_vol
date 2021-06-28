@@ -21,7 +21,7 @@ import general_functions as gf
 from real_fx_data import real_import
 from real_fx_data_old import real_import as real_import_old
 from garch_selection import garch_volatility
-from linear_models import cs_ardl, nw_ols
+from linear_models import cs_ardl, cs_ardl_two_factors, nw_ols
 
 
 
@@ -70,6 +70,8 @@ def matlab_import(real_vol: pd.DataFrame, df: pd.DataFrame,
     dcc = pd.read_csv(data_path+file_name, header=[0], index_col=[0]).iloc[1:]
     # Formating index and columns back to pythonic style
     dcc.index.name = None
+    if file_name=='dcc_eur.csv':
+        dcc = dcc.dropna(how='all')
     dcc.index = real_vol.index
     dcc.columns = df.columns
     d = dict(zip(dcc.columns.levels[1], ['var_e','var_p','cov']))
@@ -78,15 +80,19 @@ def matlab_import(real_vol: pd.DataFrame, df: pd.DataFrame,
     return dcc
 
 
+
+
 #%% Importing Data
 data_path = '/Users/talespadilha/Documents/Oxford/Research/Real Exchange Rate Volatility/Data Files/'
 df_usd = real_import(data_path, 'monthly_data.xlsx', 'us_data.xlsx', base_fx='USD') 
 df_gbp = real_import(data_path, 'monthly_data.xlsx', 'us_data.xlsx', base_fx='GBP') 
+df_eur = real_import(data_path, 'monthly_data.xlsx', 'us_data.xlsx', base_fx='EUR') 
 df_jpy = real_import(data_path, 'monthly_data.xlsx', 'us_data.xlsx', base_fx='JPY') 
 
 # Calculating real exchange rate vol
 real_vol_usd = calculate_real_vol(df_usd)
 real_vol_gbp = calculate_real_vol(df_gbp)
+real_vol_eur = calculate_real_vol(df_eur)
 real_vol_jpy = calculate_real_vol(df_jpy)
 
 
@@ -94,20 +100,23 @@ real_vol_jpy = calculate_real_vol(df_jpy)
 # Export
 matlab_generate(df_usd, file_name='df_rets.csv')
 matlab_generate(df_gbp, file_name='df_rets_gbp.csv')
+matlab_generate(df_eur, file_name='df_rets_eur.csv')
 matlab_generate(df_jpy, file_name='df_rets_jpy.csv')
+
 # Import 
 dcc_usd = matlab_import(real_vol_usd, df_usd, file_name='dcc.csv')
 dcc_gbp = matlab_import(real_vol_gbp, df_gbp, file_name='dcc_gbp.csv')
+dcc_eur = matlab_import(real_vol_eur, df_eur, file_name='dcc_eur.csv')
 dcc_jpy = matlab_import(real_vol_jpy, df_jpy, file_name='dcc_jpy.csv')
 
 
 #%% Panel Data Analysis
 
 # Setting set
-base_currency = 'JPY'
-df = df_jpy.copy()
-real_vol = real_vol_jpy.copy()
-dcc = dcc_jpy.copy()
+base_currency = 'EUR'
+df = df_eur.copy()
+real_vol = real_vol_eur.copy()
+dcc = dcc_eur.copy()
 
 # Adding a column level to the 'real_vol' DataFrame
 real_vol.columns = pd.MultiIndex.from_product([real_vol.columns, ['var_r']])
@@ -155,6 +164,7 @@ all_cs = dms+ems
 real_vol = pd.concat({
     'USD': real_vol_usd,
     'GBP': real_vol_gbp,
+    #'EUR': real_vol_eur,
     'JPY': real_vol_jpy
     }, axis=1)
 real_vol=pd.concat([real_vol], axis=1, keys=['var_r']).reorder_levels([1,2,0], axis=1)
@@ -164,6 +174,42 @@ real_vol.columns.names = ['base', 'country', 'variable']
 dcc = pd.concat({
     'GBP': dcc_usd,
     'USD': dcc_gbp,
+    #'EUR': dcc_eur,
     'JPY': dcc_jpy
     }, axis=1)
 dcc.columns.names = ['base', 'country', 'variable']
+
+
+
+em_params, em_pvalues = cs_ardl_two_factors(real_vol, dcc, ems)
+em_mg = gf.trim_mean(em_params, trim_param=0.01)
+em_p = gf.trim_mean(em_pvalues, trim_param=0.01)
+
+# DMs
+dm_params, dm_pvalues = cs_ardl_two_factors(real_vol, dcc, dms)
+dm_mg = gf.trim_mean(dm_params, trim_param=0.01)
+dm_p = gf.trim_mean(dm_pvalues, trim_param=0.01)
+
+print("EMs Params")
+print(em_mg)
+print("DMs Params")
+print(dm_mg)
+
+print("EMs P")
+print(em_p)
+print("DMs P")
+print(dm_p)
+
+# All together
+all_params, all_pvalues = cs_ardl_two_factors(real_vol, dcc, all_cs)
+all_mg = gf.trim_mean(all_params, trim_param=0.01)
+all_p = gf.trim_mean(all_pvalues, trim_param=0.01)
+print("All Coeff")
+print(all_mg)
+print("All Ps")
+print(all_p)
+
+
+# Todo: 
+    # Check transformation of JPY for why weird estimates
+    # -> Remember to change linear models code

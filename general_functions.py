@@ -29,7 +29,8 @@ def remove_outliers(ts: pd.Series, z_number: int):
 
 def df_outliers(df: pd.DataFrame, z_number: int):
     """Removes rows with where at least one series has an outlier"""
-    new_df = df[(np.abs(stats.zscore(df))<z_number).all(axis=1)]
+    z_scores = (df-df.mean())/df.std()
+    new_df = df[~(z_scores.abs()>z_number).any(axis=1)]
     
     return new_df
 
