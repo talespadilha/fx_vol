@@ -113,10 +113,10 @@ dcc_jpy = matlab_import(real_vol_jpy, df_jpy, file_name='dcc_jpy.csv')
 #%% Panel Data Analysis
 
 # Setting set
-base_currency = 'EUR'
-df = df_eur.copy()
-real_vol = real_vol_eur.copy()
-dcc = dcc_eur.copy()
+base_currency = 'JPY'
+df = df_jpy.copy()
+real_vol = real_vol_jpy.copy()
+dcc = dcc_jpy.copy()
 
 # Adding a column level to the 'real_vol' DataFrame
 real_vol.columns = pd.MultiIndex.from_product([real_vol.columns, ['var_r']])
@@ -213,3 +213,4 @@ print(all_p)
 # Todo: 
     # Check transformation of JPY for why weird estimates
     # -> Remember to change linear models code
+

@@ -13,6 +13,22 @@ import statsmodels.api as sm
 from scipy.optimize import minimize
 
 
+OUTLIERS = [
+'JPY_USD',
+'CNY_USD',
+'CNY_GBP',
+'RUB_GBP',
+'GBP_JPY',
+'AUD_JPY',
+'CAD_JPY',
+'CHF_JPY',
+'SGD_JPY',
+'DKK_JPY',
+'CNY_JPY',
+'RUB_JPY',
+]
+
+
 def get_ols_se(param_values, x, y):
     params = pd.Series(param_values, index=x.columns)
     y_hat = x.mul(params,axis=1).sum(axis=1)
@@ -35,13 +51,13 @@ def nw_ols(y:pd.Series, x:pd.DataFrame):
     mod = sm.OLS(y, x)
     max_lags = int(x.shape[0]**(1/3))
     nw_res = mod.fit(cov_type="HAC", cov_kwds={"maxlags": max_lags})
-    p0 = nw_res.params
     p_values = nw_res.pvalues
+    #params = nw_res.params
+    p0 = nw_res.params
     data_args = (x, y)
     bnds = ((0,1000),)+tuple((-1000,1000) for _ in range(len(p0)-1))
     res = minimize(get_ols_se, p0, args=data_args, bounds=bnds)
     params = pd.Series(res.x, index=p_values.index)
-    #params = nw_res.params
 
     return params, p_values
 
@@ -134,7 +150,8 @@ def cs_ardl_two_factors(r:pd.DataFrame, cov:pd.DataFrame, mkts:list):
             #c_df = gf.df_outliers(c_df, 3)
             y = c_df['var_r']
             x = sm.add_constant(c_df.loc[:, c_df.columns!='var_r'])
-            params[currcy+'_'+bse], p_values[currcy+'_'+bse] = nw_ols(y, x)
+            if currcy+'_'+bse not in OUTLIERS:
+                params[currcy+'_'+bse], p_values[currcy+'_'+bse] = nw_ols(y, x)
     params = pd.concat(params, axis=1)
     p_values = pd.concat(p_values, axis=1)
 
