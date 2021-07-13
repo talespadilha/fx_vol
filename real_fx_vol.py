@@ -19,7 +19,6 @@ import matplotlib.pyplot as plt
 # Idiosyncratic Libraries
 import general_functions as gf
 from real_fx_data import real_import
-from real_fx_data_old import real_import as real_import_old
 from garch_selection import garch_volatility
 from linear_models import cs_ardl, nw_ols, cs_ardl_dxy
 
@@ -70,10 +69,10 @@ d = dict(zip(dcc.columns.levels[1], ['var_e','var_p','cov']))
 dcc = dcc.rename(columns=d, level=1)
 
 #%% Importing GEOVOL
-#geovol_d = pd.read_csv(data_path+"m_xhat.csv", header=0, names=["month","geovol"], 
+#geovol_d = pd.read_csv(data_path+"m_xhat.csv", header=0, names=["month","geovol"],
 #                     index_col="month", parse_dates=True)
-#geovol = pd.read_csv(data_path+"xhat_df_real_and_nominal.csv", index_col="Date", 
-#                     parse_dates=True) 
+#geovol = pd.read_csv(data_path+"xhat_df_real_and_nominal.csv", index_col="Date",
+#                     parse_dates=True)
 
 #ids = pd.Series(geovol_d.index)
 #geovol_d.index = ids.apply(lambda dt: dt.replace(day=1))

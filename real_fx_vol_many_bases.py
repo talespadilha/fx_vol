@@ -19,7 +19,6 @@ import matplotlib.pyplot as plt
 # Idiosyncratic Libraries
 import general_functions as gf
 from real_fx_data import real_import
-from real_fx_data_old import real_import as real_import_old
 from garch_selection import garch_volatility
 from linear_models import cs_ardl, cs_ardl_two_factors, nw_ols
 
