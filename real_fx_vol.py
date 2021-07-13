@@ -21,7 +21,7 @@ import general_functions as gf
 from real_fx_data import real_import
 from real_fx_data_old import real_import as real_import_old
 from garch_selection import garch_volatility
-from linear_models import cs_ardl, nw_ols
+from linear_models import cs_ardl, nw_ols, cs_ardl_dxy
 
 
 #%% Importing Data
@@ -109,13 +109,21 @@ print(b_dms)
 
 #%% Panel Data Analysis
 
+# Load DXY
+dxy = pd.read_csv(data_path+"dxy_levels.csv", header=[0], index_col=[0])
+dxy.index = pd.to_datetime(dxy.index, format="%d/%m/%Y")
+dxy_m = dxy.resample('MS').mean().pct_change()*100
+dxy_std = dxy_m/dxy_m.std()
+dxy_vol, dxy_model = garch_volatility(dxy_std.dropna(), out=5)
+dxy_vol.name = 'DXY Vol'
+
 # EMs
-em_params, em_pvalues = cs_ardl(real_vol, dcc, ems)
+em_params, em_pvalues = cs_ardl_dxy(real_vol, dcc, dxy_vol, ems)
 em_mg = gf.trim_mean(em_params, trim_param=0.01)
 em_p = gf.trim_mean(em_pvalues, trim_param=0.01)
 
 # DMs
-dm_params, dm_pvalues = cs_ardl(real_vol, dcc, dms)
+dm_params, dm_pvalues = cs_ardl_dxy(real_vol, dcc, dxy_vol, dms)
 dm_mg = gf.trim_mean(dm_params, trim_param=0.01)
 dm_p = gf.trim_mean(dm_pvalues, trim_param=0.01)
 
@@ -131,10 +139,15 @@ print(dm_p)
 
 # All countries
 all_c = ems+dms
-all_params, all_pvalues = cs_ardl(real_vol, dcc, all_c)
+all_params, all_pvalues = cs_ardl_dxy(real_vol, dcc, dxy_vol, all_c)
 all_mg = gf.trim_mean(all_params, trim_param=0.01)
 all_p = gf.trim_mean(all_pvalues, trim_param=0.01)
 print("All Coeff")
 print(all_mg)
 print("All Ps")
 print(all_p)
+
+
+
+
+
