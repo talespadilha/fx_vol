@@ -117,12 +117,12 @@ dxy_vol, dxy_model = garch_volatility(dxy_std.dropna(), out=5)
 dxy_vol.name = 'DXY Vol'
 
 # EMs
-em_params, em_pvalues = cs_ardl_dxy(real_vol, dcc, dxy_vol, ems)
+em_params, em_pvalues = cs_ardl(real_vol, dcc, ems)
 em_mg = gf.trim_mean(em_params, trim_param=0.01)
 em_p = gf.trim_mean(em_pvalues, trim_param=0.01)
 
 # DMs
-dm_params, dm_pvalues = cs_ardl_dxy(real_vol, dcc, dxy_vol, dms)
+dm_params, dm_pvalues = cs_ardl(real_vol, dcc, dms)
 dm_mg = gf.trim_mean(dm_params, trim_param=0.01)
 dm_p = gf.trim_mean(dm_pvalues, trim_param=0.01)
 

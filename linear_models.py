@@ -78,7 +78,8 @@ def cs_ardl(r:pd.DataFrame, cov:pd.DataFrame, mkts:list):
     l1_real = gf.lag_df(r, lag=1, level_var=1)
     #l1_dcc = gf.lag_df(cov, lag=1, level_var=1)
     # Calculating group means
-    all_ccs = r.columns.get_level_values(0).unique()
+    #all_ccs = r.columns.get_level_values(0).unique()
+    all_ccs = mkts
     means_real = gf.group_mean(r.loc[:, all_ccs], level_var=1)
     means_dcc = gf.group_mean(cov.reindex(all_ccs, axis=1, level='country'), level_var=1)
     # Getting the lag of the means real series
@@ -123,7 +124,8 @@ def cs_ardl_dxy(r:pd.DataFrame, cov:pd.DataFrame, z_vol: pd.DataFrame, mkts:list
     l1_real = gf.lag_df(r, lag=1, level_var=1)
     #l1_dcc = gf.lag_df(cov, lag=1, level_var=1)
     # Calculating group means
-    all_ccs = r.columns.get_level_values(0).unique()
+    #all_ccs = r.columns.get_level_values(0).unique()
+    all_ccs = mkts
     means_real = gf.group_mean(r.loc[:, all_ccs], level_var=1)
     means_dcc = gf.group_mean(cov.reindex(all_ccs, axis=1, level='country'), level_var=1)
     # Getting the lag of the means real series
