@@ -157,4 +157,4 @@ def chow_analysis():
     n2 = real_vol_sample.shape[0]
     k = 10
     chow = ((sse_full-(sse1+sse2))/k)/((sse1+sse2)/(n1+n2-2*k))
-    print('')
+    print(f"Chow Test Statistic: {chow}")
