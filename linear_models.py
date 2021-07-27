@@ -137,6 +137,7 @@ def cs_ardl_dxy(r:pd.DataFrame, cov:pd.DataFrame, z_vol: pd.DataFrame, mkts:list
     # Doing the regressions
     params = {}
     p_values = {}
+    sse_dict = {}
     for currcy in mkts:
         c_df = pd.concat([r[currcy],
                           l1_real[currcy],
@@ -150,7 +151,7 @@ def cs_ardl_dxy(r:pd.DataFrame, cov:pd.DataFrame, z_vol: pd.DataFrame, mkts:list
         #c_df = gf.df_outliers(c_df, 3)
         y = c_df['var_r']
         x = sm.add_constant(c_df.loc[:, c_df.columns!='var_r'])
-        params[currcy], p_values[currcy] = nw_ols(y, x)
+        params[currcy], p_values[currcy], sse_dict[currcy] = nw_ols(y, x)
     params = pd.concat(params, axis=1)
     p_values = pd.concat(p_values, axis=1)
 

@@ -98,22 +98,22 @@ if __name__ == '__main__':
     dm_mg = gf.trim_mean(dm_params, trim_param=0.01)
     dm_p = gf.trim_mean(dm_pvalues, trim_param=0.01)
     print("EMs Params")
-    print(em_mg)
+    print(round(em_mg, 4))
     print("DMs Params")
-    print(dm_mg)
+    print(round(dm_mg, 4))
     print("EMs P")
-    print(em_p)
+    print(round(em_p, 4))
     print("DMs P")
-    print(dm_p)
+    print(round(dm_p, 4))
     # All countries
     all_c = ems+dms
     all_params, all_pvalues, _ = cs_ardl(real_vol, dcc, all_c)
     all_mg = gf.trim_mean(all_params, trim_param=0.01)
     all_p = gf.trim_mean(all_pvalues, trim_param=0.01)
     print("All Coeff")
-    print(all_mg)
+    print(round(all_mg, 4))
     print("All Ps")
-    print(all_p)
+    print(round(all_p, 4))
     # MODEL 2
     # Load DXY
     dxy_vol = get_dxy_vol("dxy_levels.csv")
@@ -126,22 +126,22 @@ if __name__ == '__main__':
     dm_mg = gf.trim_mean(dm_params, trim_param=0.01)
     dm_p = gf.trim_mean(dm_pvalues, trim_param=0.01)
     print("EMs Params")
-    print(em_mg)
+    print(round(em_mg, 4))
     print("DMs Params")
-    print(dm_mg)
+    print(round(dm_mg, 4))
     print("EMs P")
-    print(em_p)
+    print(round(em_p, 4))
     print("DMs P")
-    print(dm_p)
+    print(round(dm_p, 4))
     # All countries
     all_c = ems+dms
     all_params, all_pvalues = cs_ardl_dxy(real_vol, dcc, dxy_vol, all_c)
     all_mg = gf.trim_mean(all_params, trim_param=0.01)
     all_p = gf.trim_mean(all_pvalues, trim_param=0.01)
     print("All Coeff")
-    print(all_mg)
+    print(round(all_mg, 4))
     print("All Ps")
-    print(all_p)
+    print(round(all_p, 4))
 
 def chow_analysis():
     """Sample code for Chow test for structural break"""
