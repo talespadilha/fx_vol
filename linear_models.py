@@ -58,8 +58,9 @@ def nw_ols(y:pd.Series, x:pd.DataFrame):
     bnds = ((0,1000),)+tuple((-1000,1000) for _ in range(len(p0)-1))
     res = minimize(get_ols_se, p0, args=data_args, bounds=bnds)
     params = pd.Series(res.x, index=p_values.index)
+    sse = get_ols_se(res.x, x, y)
 
-    return params, p_values
+    return params, p_values, sse
 
 
 def cs_ardl(r:pd.DataFrame, cov:pd.DataFrame, mkts:list):
@@ -88,6 +89,7 @@ def cs_ardl(r:pd.DataFrame, cov:pd.DataFrame, mkts:list):
     # Doing the regressions
     params = {}
     p_values = {}
+    sse_dict = {}
     for currcy in mkts:
         c_df = pd.concat([r[currcy],
                           l1_real[currcy],
@@ -100,11 +102,12 @@ def cs_ardl(r:pd.DataFrame, cov:pd.DataFrame, mkts:list):
         #c_df = gf.df_outliers(c_df, 3)
         y = c_df['var_r']
         x = sm.add_constant(c_df.loc[:, c_df.columns!='var_r'])
-        params[currcy], p_values[currcy] = nw_ols(y, x)
+        params[currcy], p_values[currcy], sse_dict[currcy] = nw_ols(y, x)
     params = pd.concat(params, axis=1)
     p_values = pd.concat(p_values, axis=1)
+    sse = pd.Series(sse_dict)
 
-    return params, p_values
+    return params, p_values, sse
 
 
 
@@ -134,6 +137,7 @@ def cs_ardl_dxy(r:pd.DataFrame, cov:pd.DataFrame, z_vol: pd.DataFrame, mkts:list
     # Doing the regressions
     params = {}
     p_values = {}
+    sse_dict = {}
     for currcy in mkts:
         c_df = pd.concat([r[currcy],
                           l1_real[currcy],
@@ -147,7 +151,7 @@ def cs_ardl_dxy(r:pd.DataFrame, cov:pd.DataFrame, z_vol: pd.DataFrame, mkts:list
         #c_df = gf.df_outliers(c_df, 3)
         y = c_df['var_r']
         x = sm.add_constant(c_df.loc[:, c_df.columns!='var_r'])
-        params[currcy], p_values[currcy] = nw_ols(y, x)
+        params[currcy], p_values[currcy], sse_dict[currcy] = nw_ols(y, x)
     params = pd.concat(params, axis=1)
     p_values = pd.concat(p_values, axis=1)
 
