@@ -90,11 +90,11 @@ if __name__ == '__main__':
     ems, dms = gf.markets_set(df, data_path, base_fx='USD')
     # Model 1
     #EMs
-    em_params, em_pvalues = cs_ardl(real_vol, dcc, ems)
+    em_params, em_pvalues, _ = cs_ardl(real_vol, dcc, ems)
     em_mg = gf.trim_mean(em_params, trim_param=0.01)
     em_p = gf.trim_mean(em_pvalues, trim_param=0.01)
     # DMs
-    dm_params, dm_pvalues = cs_ardl(real_vol, dcc, dms)
+    dm_params, dm_pvalues, _ = cs_ardl(real_vol, dcc, dms)
     dm_mg = gf.trim_mean(dm_params, trim_param=0.01)
     dm_p = gf.trim_mean(dm_pvalues, trim_param=0.01)
     print("EMs Params")
@@ -107,7 +107,7 @@ if __name__ == '__main__':
     print(dm_p)
     # All countries
     all_c = ems+dms
-    all_params, all_pvalues = cs_ardl(real_vol, dcc, all_c)
+    all_params, all_pvalues, _ = cs_ardl(real_vol, dcc, all_c)
     all_mg = gf.trim_mean(all_params, trim_param=0.01)
     all_p = gf.trim_mean(all_pvalues, trim_param=0.01)
     print("All Coeff")
@@ -142,3 +142,19 @@ if __name__ == '__main__':
     print(all_mg)
     print("All Ps")
     print(all_p)
+
+def chow_analysis():
+    """Sample code for Chow test for structural break"""
+    real_vol_sample = real_vol.loc['2009-01-01':].copy()
+    dcc_sample = dcc.loc['2009-01-01':].copy()
+    # All countries
+    all_c = ems+dms
+    all_params, all_pvalues, all_sse_all = cs_ardl(real_vol, dcc, all_c)
+    sse1 = gf.trim_mean(pd.DataFrame(all_sse1).T, trim_param=0.01)[0]
+    sse2 = gf.trim_mean(pd.DataFrame(all_sse2).T, trim_param=0.01)[0]
+    sse_full = gf.trim_mean(pd.DataFrame(all_sse_all).T, trim_param=0.01)[0]
+    n1 = real_vol_sample.shape[0]
+    n2 = real_vol_sample.shape[0]
+    k = 10
+    chow = ((sse_full-(sse1+sse2))/k)/((sse1+sse2)/(n1+n2-2*k))
+    print('')
